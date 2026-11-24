@@ -571,7 +571,10 @@ export default function Dashboard() {
                       onClick={() => {
                         const enabled = !autoScheduleEnabled;
                         setAutoScheduleEnabled(enabled);
-                        setAutoNextRunAt(enabled ? Date.now() + autoScheduleMinutes * 60_000 : null);
+                        // Enabling automation queues the first default search immediately.
+                        // The scheduler moves the deadline forward by the selected interval
+                        // as soon as that first run is dispatched.
+                        setAutoNextRunAt(enabled ? Date.now() : null);
                       }}
                       className={`relative h-8 w-[4.5rem] shrink-0 rounded-full transition-colors disabled:opacity-50 ${autoScheduleEnabled ? "bg-emerald-500" : "bg-slate-700"}`}
                     >
@@ -600,7 +603,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <button onClick={startSearch} disabled={autoScheduleEnabled || searchInputsDisabled || quotaWaiting || !upworkConnected || backendStatus !== "online" || (keywordMode === "manual" && !hasManualKeywords)} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-3 text-center text-sm font-bold shadow-lg shadow-violet-950/30 hover:bg-violet-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none">{runLoading ? <Spinner /> : quotaWaiting ? <Clock3 className="shrink-0" size={17} /> : <Play className="shrink-0" size={17} fill="currentColor" />} <span className="truncate">{activeRun?.status === "running" ? "Search in progress" : autoScheduleEnabled ? "Auto search is on" : quotaWaiting ? `Retry in ${quotaWaitSeconds}s` : keywordMode === "default" ? "Search default keywords" : `Search ${searchKeywords.length + (keywordInput.trim() ? 1 : 0)} keyword${searchKeywords.length + (keywordInput.trim() ? 1 : 0) === 1 ? "" : "s"}`}</span></button>
+              <button onClick={() => void startSearch()} disabled={autoScheduleEnabled || searchInputsDisabled || quotaWaiting || !upworkConnected || backendStatus !== "online" || (keywordMode === "manual" && !hasManualKeywords)} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-violet-500 px-3 text-center text-sm font-bold shadow-lg shadow-violet-950/30 hover:bg-violet-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none">{runLoading ? <Spinner /> : quotaWaiting ? <Clock3 className="shrink-0" size={17} /> : <Play className="shrink-0" size={17} fill="currentColor" />} <span className="truncate">{activeRun?.status === "running" ? "Search in progress" : autoScheduleEnabled ? "Auto search is on" : quotaWaiting ? `Retry in ${quotaWaitSeconds}s` : keywordMode === "default" ? "Search default keywords" : `Search ${searchKeywords.length + (keywordInput.trim() ? 1 : 0)} keyword${searchKeywords.length + (keywordInput.trim() ? 1 : 0) === 1 ? "" : "s"}`}</span></button>
             </div>
           </div></section>
 
