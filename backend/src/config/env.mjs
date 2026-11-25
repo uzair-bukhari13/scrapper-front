@@ -17,6 +17,12 @@ export const loadEnvironment=(env=process.env)=>{
   const socketPath=env.SOCKET_IO_PATH||(isVercel?'/backend/socket.io':'/socket.io');
   const apiKey=env.DASHBOARD_API_KEY;
   const mongodbUri=env.MONGODB_URI;
+  const dnsServers=Object.freeze(
+    (env.DNS_SERVERS||'')
+      .split(',')
+      .map(server=>server.trim())
+      .filter(Boolean)
+  );
 
   if (!apiKey||apiKey.length<32||apiKey.startsWith('REPLACE')) throw new Error('Set DASHBOARD_API_KEY to a random secret of 32+ characters');
   if (!mongodbUri||!/^mongodb(?:\+srv)?:\/\//.test(mongodbUri)) throw new Error('Set MONGODB_URI to a valid MongoDB connection string');
@@ -36,6 +42,7 @@ export const loadEnvironment=(env=process.env)=>{
     apiKey,
     mongodbUri,
     mongodbDatabaseName:env.MONGODB_DATABASE_NAME||'esclatech_upwork',
+    dnsServers,
     tokenEncryptionKey:env.TOKEN_ENCRYPTION_KEY,
     upworkMcpUrl:env.UPWORK_MCP_URL||'https://mcp.upwork.com/mcp',
     quota:Object.freeze({

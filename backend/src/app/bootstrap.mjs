@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { setServers as setDnsServers } from 'node:dns';
 import { loadEnvironment } from '../config/env.mjs';
 import { connectMongoDatabase } from '../infrastructure/database/mongodb.mjs';
 import { createEncryptedMongoStore } from '../infrastructure/persistence/encrypted-mongo-store.mjs';
@@ -55,6 +56,9 @@ export const bootstrap = async ({
   }
 
   const config = loadEnvironment(env);
+  if (config.dnsServers.length>0) {
+    setDnsServers(config.dnsServers);
+  }
   const database = await connectMongoDatabase({
     uri: config.mongodbUri,
     databaseName: config.mongodbDatabaseName

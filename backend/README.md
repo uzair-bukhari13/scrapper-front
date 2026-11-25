@@ -72,12 +72,15 @@ PUBLIC_BASE_URL=http://localhost:5050
 FRONTEND_ORIGIN=http://localhost:3000
 MONGODB_URI=mongodb://127.0.0.1:27017
 MONGODB_DATABASE_NAME=esclatech_upwork
+DNS_SERVERS=1.1.1.1,8.8.8.8
 UPWORK_MCP_URL=https://mcp.upwork.com/mcp
 TARGET_COUNTRY=United States
 DASHBOARD_API_KEY=REPLACE_WITH_RANDOM_LONG_SECRET
 TOKEN_ENCRYPTION_KEY=REPLACE_WITH_64_HEX_CHARACTERS
 AUTOMATED_POLLING_ENABLED=false
 ```
+
+`DNS_SERVERS` is optional. Set it to comma-separated DNS server IPs only when the machine's default resolver rejects MongoDB Atlas SRV lookups; leave it unset when the system resolver works normally.
 
 `TARGET_COUNTRY` must be either `United States` or `Canada`.
 
