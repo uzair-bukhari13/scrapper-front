@@ -20,6 +20,10 @@
 # production
 /build
 
+# backend runtime data
+/backend/data/*
+!/backend/data/.gitkeep
+
 # misc
 .DS_Store
 *.pem

@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Esclatech Upwork Dashboard
 
-## Getting Started
+This repository contains the complete application:
 
-First, run the development server:
+- A Next.js dashboard in the repository root.
+- An Express, Socket.IO, MongoDB, and Upwork MCP service in `backend/`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Both applications remain separate processes so Socket.IO can keep a persistent server, but npm starts and stops them together.
+
+## Requirements
+
+- Node.js 22 or newer
+- npm
+- MongoDB 6 or newer, or a MongoDB Atlas connection
+- An Upwork account with access to Upwork MCP
+
+## First-time setup
+
+Install all frontend and backend workspace dependencies from the repository root:
+
+```powershell
+npm.cmd install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create the local environment files if they do not already exist:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```powershell
+Copy-Item .env.example .env.local
+Copy-Item backend/.env.example backend/.env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use the same `DASHBOARD_API_KEY` in `.env.local` and `backend/.env`. Generate a separate 64-character hexadecimal `TOKEN_ENCRYPTION_KEY` for the backend. See [backend/README.md](backend/README.md) for every backend setting.
 
-## Learn More
+## Run the complete application
 
-To learn more about Next.js, take a look at the following resources:
+From the repository root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```powershell
+npm.cmd run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This starts:
 
-## Deploy on Vercel
+- Frontend: http://localhost:3000
+- Backend and Socket.IO: http://localhost:5050
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Stopping the root command stops both processes. The frontend proxies REST requests through `/api/backend`, while the browser connects to the backend directly for Socket.IO progress events.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Other commands
+
+```powershell
+npm.cmd run build          # Build the Next.js frontend
+npm.cmd start              # Start the built frontend and production backend
+npm.cmd run lint           # Lint the frontend
+npm.cmd run test:backend   # Run backend unit tests
+npm.cmd run check:backend  # Syntax-check backend entry points
+```
+
+`npm.cmd start` requires `npm.cmd run build` to have completed first.
+
+## Deployment
+
+Keeping both applications in one repository does not require deploying them as one process. The Next.js frontend can be deployed independently while the persistent Express/Socket.IO backend runs on a Node.js host. Set the deployed backend URLs and allowed frontend origin in the corresponding environment configuration.
